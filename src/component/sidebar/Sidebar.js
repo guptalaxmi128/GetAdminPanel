@@ -1,18 +1,68 @@
 import React, { useState } from "react";
-import { NavLink } from 'react-router-dom';
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import GroupSharpIcon from "@mui/icons-material/GroupSharp";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import { NavLink } from "react-router-dom";
+import {
+  User,
+  Home,
+  Users,
+  Gift,
+  DollarSign,
+  Award,
+  BookOpen,
+  Bell,
+  FileText,
+  Heart,
+  Power,
+  X,
+  CheckCircle,
+} from "react-feather";
 import logo from "../../assets/images/logo.png";
-import '../sidebar/SideBar.css';
+import SubMenu from "./SubMenu";
 
-const Sidebar = () => {
+const subMenuItems = [
+  {
+    label: "Raise Fund ",
+    route: "/raise-fund-request",
+    icon: <DollarSign size={24} />,
+  },
+
+  {
+    label: "Account",
+    route: "/account-request",
+    icon: <Users size={24} />,
+  },
+
+  {
+    label: "Profile",
+    route: "/profile-request",
+    icon: <User size={24} />,
+  },
+  {
+    label: "Qualification",
+    route: "/qualification-request",
+    icon: <Award size={24} />,
+  },
+];
+
+const Sidebar = ({ toggle }) => {
   const [activeItem, setActiveItem] = useState(0);
+  const [showSubMenu, setShowSubMenu] = useState(false);
+  const [activeSubMenu, setActiveSubMenu] = useState(null)
 
   const handleItemClick = (index) => {
-    setActiveItem(index);
+    if (index === 3) {
+      setActiveSubMenu("Request");
+      setShowSubMenu(!showSubMenu);
+    } else {
+      setShowSubMenu(false);
+      setActiveItem(index);
+      setActiveSubMenu(null); 
+    }
+  };
+
+  
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
   };
 
   return (
@@ -27,51 +77,38 @@ const Sidebar = () => {
             src={logo}
             className="white_logo"
             alt="logo"
-            width={100}
-            height={100}
+            width={50}
+            height={50}
           />
           <span className="ltr:ml-3 rtl:mr-3 text-xl font-Inter font-bold text-slate-900 dark:text-white">
-          GET
+            GET
           </span>
         </NavLink>
-        {/* <!-- Sidebar Type Button --> */}
-        <div
-          id="sidebar_type"
-          className="cursor-pointer text-slate-900 dark:text-white text-lg"
+        <button
+          className="sidebarCloseIcon text-2xl inline-block xl:hidden"
+          onClick={toggle}
         >
-          <iconify-icon
-            className="sidebarDotIcon extend-icon text-slate-900 dark:text-slate-200"
-            icon="fa-regular:dot-circle"
-          ></iconify-icon>
-          <iconify-icon
-            className="sidebarDotIcon collapsed-icon text-slate-900 dark:text-slate-200"
-            icon="material-symbols:circle-outline"
-          ></iconify-icon>
-        </div>
-        <button className="sidebarCloseIcon text-2xl inline-block md:hidden">
-          <iconify-icon
-            className="text-slate-900 dark:text-slate-200"
-            icon="clarity:window-close-line"
-          ></iconify-icon>
+          <X size={24} />
         </button>
       </div>
       <div
         id="nav_shadow"
-        className="nav_shadow h-[60px] absolute top-[80px] nav-shadow z-[1] w-full  pointer-events-none
+        className="nav_shadow h-[60px] absolute top-[0px] nav-shadow z-[1] w-full  pointer-events-none
   opacity-0"
       ></div>
       <div
         className="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] z-50 "
         id="sidebar_menus"
       >
+       <div className="sidebar-content">
         <ul className="sidebar-menu">
           <li
             className={activeItem === 0 ? "active" : ""}
             onClick={() => handleItemClick(0)}
           >
-            <NavLink to="/" className="navItem">
+            <NavLink to="/home" className="navItem">
               <span className="flex items-center">
-                <HomeRoundedIcon /> &nbsp; &nbsp;
+                <Home size={24} /> &nbsp; &nbsp;
                 <span>Dashboard</span>
               </span>
             </NavLink>
@@ -81,11 +118,11 @@ const Sidebar = () => {
             className={activeItem === 1 ? "active" : ""}
             onClick={() => handleItemClick(1)}
           >
-            <NavLink to="/course" className="navItem">
+            <NavLink to="/student" className="navItem">
               <span className="flex items-center">
-                <ListAltOutlinedIcon />
+                <Users size={24} />
                 &nbsp; &nbsp;
-                <span>Course Details</span>
+                <span>Students</span>
               </span>
             </NavLink>
           </li>
@@ -93,10 +130,10 @@ const Sidebar = () => {
             className={activeItem === 2 ? "active" : ""}
             onClick={() => handleItemClick(2)}
           >
-            <NavLink to="/account" className="navItem">
+            <NavLink to="/donar" className="navItem">
               <span className="flex items-center">
-                <GroupSharpIcon /> &nbsp; &nbsp;
-                <span>Account Details</span>
+                <Gift size={24} /> &nbsp; &nbsp;
+                <span>Donar</span>
               </span>
             </NavLink>
           </li>
@@ -104,25 +141,91 @@ const Sidebar = () => {
             className={activeItem === 3 ? "active" : ""}
             onClick={() => handleItemClick(3)}
           >
-            <NavLink to="/wallet" className="navItem">
+            <NavLink to="#"
+             className="request"
+             >
               <span className="flex items-center">
-                <AccountBalanceWalletOutlinedIcon /> &nbsp; &nbsp;
-                <span>Wallet</span>
+                <DollarSign size={24} />
+                &nbsp; &nbsp;
+                <span> Request</span>
               </span>
             </NavLink>
           </li>
+       {showSubMenu && <SubMenu subMenuItems={subMenuItems} activeSubMenu={activeSubMenu} /> }   
+
           <li
             className={activeItem === 4 ? "active" : ""}
             onClick={() => handleItemClick(4)}
           >
-            <NavLink to="/profile" className="navItem">
+            <NavLink to="/donated" className="navItem">
               <span className="flex items-center">
-                <DescriptionOutlinedIcon /> &nbsp;&nbsp;&nbsp;
-                <span>Profile</span>
+                <CheckCircle size={24} /> &nbsp;&nbsp;&nbsp;
+                <span>Donated</span>
+              </span>
+            </NavLink>
+          </li>
+          <li
+            className={activeItem === 5 ? "active" : ""}
+            onClick={() => handleItemClick(5)}
+          >
+            <NavLink to="/course-offered" className="navItem">
+              <span className="flex items-center">
+                <BookOpen size={24} />
+                &nbsp;&nbsp;&nbsp;
+                <span>Course Offered</span>
+              </span>
+            </NavLink>
+          </li>
+          <li
+            className={activeItem === 6 ? "active" : ""}
+            onClick={() => handleItemClick(6)}
+          >
+            <NavLink to="/notification" className="navItem">
+              <span className="flex items-center">
+                <Bell size={24} />
+                &nbsp;&nbsp;&nbsp;
+                <span>Notification</span>
+              </span>
+            </NavLink>
+          </li>
+          <li
+            className={activeItem === 7 ? "active" : ""}
+            onClick={() => handleItemClick(7)}
+          >
+            <NavLink to="/invoice" className="navItem">
+              <span className="flex items-center">
+                <FileText size={24} />
+                &nbsp;&nbsp;&nbsp;
+                <span>Invoice Generate</span>
+              </span>
+            </NavLink>
+          </li>
+          <li
+            className={activeItem === 8 ? "active" : ""}
+            onClick={() => handleItemClick(8)}
+          >
+            <NavLink to="/open-donar-data" className="navItem">
+              <span className="flex items-center">
+                <Heart size={24} />
+                &nbsp;&nbsp;&nbsp;
+                <span>Open Source Donar</span>
+              </span>
+            </NavLink>
+          </li>
+          <li
+            className={activeItem === 9 ? "active" : ""}
+            onClick={() => handleItemClick(9)}
+          >
+            <NavLink to="/" className="navItem" onClick={handleLogout}>
+              <span className="flex items-center">
+                <Power size={24} />
+                &nbsp;&nbsp;&nbsp;
+                <span>Logout</span>
               </span>
             </NavLink>
           </li>
         </ul>
+        </div>
       </div>
     </div>
     // {/* <!-- End: Sidebar --> */}
